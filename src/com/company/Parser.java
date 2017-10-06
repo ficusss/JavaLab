@@ -3,13 +3,13 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.*;
 
-/**
- * Created by Grigory on 29.09.2017.
- */
 public class Parser {
     static public String regCommandLine;
     static public String regConfigFile;
 
+    /**
+     * Static block with initialization of regular expressions.
+     */
     static {
         regCommandLine = "(\\w+)=(\\w+\\.\\w+)";
         regConfigFile = "(\\w+)=((\\W+)|(\\w+))";
@@ -17,6 +17,11 @@ public class Parser {
 
     private Parser() {}
 
+    /**
+     * Bonding strings from args in one string.
+     * @param args - array with any string.
+     * @return argStr - glued string.
+     */
     public static String arrToString(String[] args) {
         String argStr = "";
         for (String str : args)
@@ -24,10 +29,17 @@ public class Parser {
         return argStr;
     }
 
-    public static Map<String, String> getMap(String argString, String regStr) throws RepetitionOfArgument {
+    /**
+     * Get parsed string as like table.
+     * @param string - string to parsing.
+     * @param regStr - regular expression.
+     * @return hashMap - table with parsed string.
+     * @throws RepetitionOfArgument - an exception occurs if some arguments in string are repeated.
+     */
+    public static Map<String, String> getMap(String string, String regStr) throws RepetitionOfArgument {
         Map<String, String> hashMap = new HashMap<String, String>();
         Pattern p = Pattern.compile(regStr);
-        Matcher m = p.matcher(argString);
+        Matcher m = p.matcher(string);
         String key;
         while (m.find()) {
             key = m.group(1);

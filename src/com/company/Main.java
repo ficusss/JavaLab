@@ -3,6 +3,10 @@ import java.io.*;
 import java.util.Map;
 
 public class Main {
+    /**
+     * The main method. Calls the script of the program.
+     * @param args command-line arguments(type: String)
+     */
     public static void main(String[] args) {
         try {
             Map hashMapArg = Parser.getMap(Parser.arrToString(args), Parser.regCommandLine);

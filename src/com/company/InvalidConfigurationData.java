@@ -1,7 +1,7 @@
 package com.company;
 
 /**
- * Created by Grigory on 05.10.2017.
+ * An exception occurs if any data does not meet expectations.
  */
 public class InvalidConfigurationData extends Exception {
     public InvalidConfigurationData(String message) {

@@ -1,7 +1,10 @@
 package com.company;
 
+/**
+ * Enum with keys for file name.
+ */
 enum FileName {
-    INPUT("input"), OUTPUT("output"), CONFIG("config"), LOG("LogFile.txt");
+    INPUT("input"), OUTPUT("output"), CONFIG("config");
     private final String string;
     FileName(String str) {
         this.string = str;
@@ -12,6 +15,9 @@ enum FileName {
     }
 }
 
+/**
+ * Enum with keys for parameter from config file.
+ */
 enum ConfigParameter {
     MODE("mode"), COUNT_BIT("countBits");
     private final String string;
@@ -25,6 +31,9 @@ enum ConfigParameter {
     }
 }
 
+/**
+ * Enum with keys for possible modes.
+ */
 enum Mode {
     RIGHT(">>"), LEFT("<<");
     private final String string;
