@@ -1,0 +1,4 @@
+mode=<<
+countBits=16
+fadcasac
+#fsaav
