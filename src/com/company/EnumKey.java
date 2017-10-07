@@ -35,7 +35,7 @@ enum ConfigParameter {
  * Enum with keys for possible modes.
  */
 enum Mode {
-    RIGHT(">>"), LEFT("<<");
+    RIGHT(">> "), LEFT("<< ");
     private final String string;
 
     Mode(String str) {

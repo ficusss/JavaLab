@@ -9,7 +9,7 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            Map hashMapArg = Parser.getMap(Parser.arrToString(args), Parser.regCommandLine);
+            Map hashMapArg = Parser.getMap(Parser.arrToString(args), Parser.REG_COMMAND_LINE);
 
             FileInputStream input = new FileInputStream((String) hashMapArg.get(FileName.INPUT.getValue()));
             FileOutputStream output = new FileOutputStream((String) hashMapArg.get(FileName.OUTPUT.getValue()));

@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.regex.*;
 
 public class Parser {
-    static public String regCommandLine;
-    static public String regConfigFile;
+    static public String REG_COMMAND_LINE;
+    static public String REG_CONFIG_FILE;
 
     /**
      * Static block with initialization of regular expressions.
      */
     static {
-        regCommandLine = "(\\w+)=(\\w+\\.\\w+)";
-        regConfigFile = "(\\w+)=((\\W+)|(\\w+))";
+        REG_COMMAND_LINE = "(\\w+)=(\\w+\\.\\w+)";
+        REG_CONFIG_FILE = "(\\w+)=((\\W+)|(\\w+))";
     }
 
     private Parser() {}
@@ -22,10 +22,12 @@ public class Parser {
      * @param args - array with any string.
      * @return argStr - glued string.
      */
-    public static String arrToString(String[] args) {
-        String argStr = "";
-        for (String str : args)
-            argStr += str + " ";
+    public static StringBuffer arrToString(String[] args) {
+        StringBuffer argStr = new StringBuffer();
+        for (String str : args) {
+            argStr.append(str);
+            argStr.append(" ");
+        }
         return argStr;
     }
 
@@ -36,7 +38,7 @@ public class Parser {
      * @return hashMap - table with parsed string.
      * @throws RepetitionOfArgument - an exception occurs if some arguments in string are repeated.
      */
-    public static Map<String, String> getMap(String string, String regStr) throws RepetitionOfArgument {
+    public static Map<String, String> getMap(StringBuffer string, String regStr) throws RepetitionOfArgument {
         Map<String, String> hashMap = new HashMap<String, String>();
         Pattern p = Pattern.compile(regStr);
         Matcher m = p.matcher(string);

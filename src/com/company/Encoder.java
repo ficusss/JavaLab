@@ -34,6 +34,7 @@ public class Encoder {
             throw new InvalidConfigurationData("Invalid values in mode!");
         if ((int) confData.get(ConfigParameter.COUNT_BIT.getValue()) < 0)
             throw new InvalidConfigurationData("Invalid values in countBits");
+
         BufferedInputStream bufferIn = new BufferedInputStream(in);
         BufferedOutputStream bufferOut = new BufferedOutputStream(out);
         int shift;
@@ -42,6 +43,7 @@ public class Encoder {
             shift = 8 - (int) confData.get(ConfigParameter.COUNT_BIT.getValue()) % 8;
         else
             shift = (int) confData.get(ConfigParameter.COUNT_BIT.getValue()) % 8;
+
         while(bufferIn.read(byte_) != -1) {
             byte_[0] = rotateLeft(byte_[0], shift);
             bufferOut.write(byte_);

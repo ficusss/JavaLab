@@ -20,18 +20,20 @@ public class ConfFile {
     public static Map read(File confFile) throws IOException, RepetitionOfArgument,
             InvalidConfigurationData, NumberFormatException {
         Scanner scanner = new Scanner(confFile);
-        String argFromConfFile = "";
-        while (scanner.hasNext())
-            argFromConfFile += scanner.nextLine() + " ";
-        Map confData = Parser.getMap(argFromConfFile, Parser.regConfigFile);
+        StringBuffer argFromConfFile = new StringBuffer();
+        while (scanner.hasNext()) {
+            argFromConfFile.append(scanner.nextLine());
+            argFromConfFile.append(" ");
+        }
+        Map confData = Parser.getMap(argFromConfFile, Parser.REG_CONFIG_FILE);
         if (!confData.containsKey(ConfigParameter.MODE.getValue()) ||
                 !confData.containsKey(ConfigParameter.COUNT_BIT.getValue())) {
             throw new InvalidConfigurationData("Use mode and countBits!");
         }
         confData.put(ConfigParameter.COUNT_BIT.getValue(),
                 Integer.parseInt((String) confData.get(ConfigParameter.COUNT_BIT.getValue())));
-        if (!confData.get(ConfigParameter.MODE.getValue()).equals(Mode.RIGHT.getValue()) &&
-                !confData.get(ConfigParameter.MODE.getValue()).equals(Mode.LEFT.getValue())) {
+        if (!(confData.get(ConfigParameter.MODE.getValue()).equals(Mode.RIGHT.getValue()) ||
+                confData.get(ConfigParameter.MODE.getValue()).equals(Mode.LEFT.getValue()))) {
             throw new InvalidConfigurationData("Invalid values in mode!");
         }
         if ((int) confData.get(ConfigParameter.COUNT_BIT.getValue()) < 0) {
