@@ -25,20 +25,11 @@ public class ConfFile {
             argFromConfFile.append(scanner.nextLine());
             argFromConfFile.append(" ");
         }
-        Map confData = Parser.getMap(argFromConfFile, Parser.REG_CONFIG_FILE);
-        if (!confData.containsKey(ConfigParameter.MODE.getValue()) ||
-                !confData.containsKey(ConfigParameter.COUNT_BIT.getValue())) {
-            throw new InvalidConfigurationData("Use mode and countBits!");
+        Map configData = Parser.getMap(argFromConfFile, Parser.REG_CONFIG_FILE);
+        if (configData.containsKey(ConfigParameter.COUNT_BIT.getValue())) {
+            configData.put(ConfigParameter.COUNT_BIT.getValue(),
+                    Integer.parseInt((String) configData.get(ConfigParameter.COUNT_BIT.getValue())));
         }
-        confData.put(ConfigParameter.COUNT_BIT.getValue(),
-                Integer.parseInt((String) confData.get(ConfigParameter.COUNT_BIT.getValue())));
-        if (!(confData.get(ConfigParameter.MODE.getValue()).equals(Mode.RIGHT.getValue()) ||
-                confData.get(ConfigParameter.MODE.getValue()).equals(Mode.LEFT.getValue()))) {
-            throw new InvalidConfigurationData("Invalid values in mode!");
-        }
-        if ((int) confData.get(ConfigParameter.COUNT_BIT.getValue()) < 0) {
-            throw new InvalidConfigurationData("Invalid values in countBits");
-        }
-        return confData;
+        return configData;
     }
 }

@@ -2,3 +2,4 @@ mode=<<
 countBits=16
 fadcasac
 #fsaav
+method1=shiftByte

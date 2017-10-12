@@ -1,5 +1,9 @@
 package com.company;
+
+import sun.security.provider.SHA;
+
 import java.io.*;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
@@ -16,7 +20,13 @@ public class Main {
             File configFile = new File((String) hashMapArg.get(FileName.CONFIG.getValue()));
 
             Map configData = ConfFile.read(configFile);
-            Encoder.ShiftByte(input, output, configData);
+            List<Encoder> encoderList = ParserOfMethods.getList(configData);
+
+            Conveyor.start(input, output, encoderList, configData);
+
+            //ShiftByte shift = new ShiftByte();
+            //shift.encodeAllStream(input, output, configData);
+
         } catch (InvalidConfigurationData|RepetitionOfArgument|IOException|NumberFormatException e ) {
             System.out.println(e.getMessage());
             LogFile.WriterLogFile(e);
