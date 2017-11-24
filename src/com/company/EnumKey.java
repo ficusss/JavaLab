@@ -16,10 +16,42 @@ enum FileName {
 }
 
 /**
+ * Enum with keys for output parameters of methods .
+ */
+enum OutputParamMethod {
+    DATA_FILE("tempFile");
+    private final String string;
+
+    OutputParamMethod(String str) {
+        this.string = str;
+    }
+
+    public String getValue() {
+        return string;
+    }
+}
+
+/**
+ * Enum with keys for parameter from config file of shift method.
+ */
+enum ShiftByteConfig {
+    MODE("mode"), COUNT_BITS("count_bits");
+    private final String string;
+
+    ShiftByteConfig(String str) {
+        this.string = str;
+    }
+
+    public String getValue() {
+        return string;
+    }
+}
+
+/**
  * Enum with keys for parameter from config file.
  */
 enum ConfigParameter {
-    MODE("mode"), COUNT_BIT("countBits"), METHOD("method");
+    METHOD("method"), CONFIG_FILE("config_file");
     private final String string;
 
     ConfigParameter(String str) {
@@ -39,22 +71,6 @@ enum Mode {
     private final String string;
 
     Mode(String str) {
-        this.string = str;
-    }
-
-    public String getValue() {
-        return string;
-    }
-}
-
-/**
- * Enum with keys for methods.
- */
-enum Method {
-    SHIFT_BYTE("shiftByte"), XOR("xor");
-    private final String string;
-
-    Method(String str) {
         this.string = str;
     }
 

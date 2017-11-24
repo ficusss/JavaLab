@@ -1,5 +1,3 @@
-mode=<<
-countBits=16
-fadcasac
-#fsaav
-method1=shiftByte
+ShiftByte=ShiftByteConfig1.txt
+#xor=sf.txt
+ShiftByte=ShiftByteConfig2.txt

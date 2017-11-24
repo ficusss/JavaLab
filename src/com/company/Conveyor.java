@@ -1,33 +1,51 @@
 package com.company;
 
-import java.io.*;
-import java.util.Collection;
+
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Conveyor {
     private Conveyor() {}
 
     /**
-     * Encode the input data (input stream) with a sequence of methods.
-     * @param in - input stream.
-     * @param out - output stream.
-     * @param collectionEncode - sequence of coding methods.
-     * @param confData - table with supporting data from config file.
-     * @throws IOException - an exception occurs if there are problems with the streams that are transmitted.
-     * @throws InvalidConfigurationData - an exception occurs if configData does not meet expectations.
+     * Pipelined data processing.
+     *
+     * @param argData - data from command line.
+     * @param listMethods - list of methods.
      */
-    public static void start(FileInputStream in, FileOutputStream out, Collection<Encoder> encoderCollection,
-                             Map configData) throws IOException, InvalidConfigurationData {
-        BufferedInputStream bufferIn = new BufferedInputStream(in);
-        BufferedOutputStream bufferOut = new BufferedOutputStream(out);
-        byte[] byte_ = new byte[1];
+    public static void start(Map argData, ArrayList<Map<String, String>> listMethods) {
+        try {
+            if (listMethods.isEmpty())
+                throw new EmptyListCommand();
+            Class prevAlgorithm, currAlgorithm;
+            Object prevObj = new Object(), currObj;
 
-        while (bufferIn.read(byte_) != -1) {
-            for (Encoder currEncoder : encoderCollection) {
-                byte_[0] = currEncoder.encode(byte_[0], configData);
+            for (int i = 0; i < listMethods.size(); i++) {
+                if (listMethods.get(i).get(ConfigParameter.METHOD.getValue()).equals("Begin")) {
+                    prevAlgorithm = Class.forName("com.company." + "Begin");
+                    Constructor constructor = prevAlgorithm.getConstructor(Map.class);
+                    currObj = constructor.newInstance(argData);
+                } else if (listMethods.get(i).get(ConfigParameter.METHOD.getValue()).equals("End")) {
+                    currAlgorithm = Class.forName("com.company." + "End");
+                    Constructor constructor = currAlgorithm.getConstructor(Handler.class, Map.class);
+                    currObj = constructor.newInstance(prevObj, argData);
+                } else {
+                    currAlgorithm = Class.forName("com.company." +
+                            listMethods.get(i).get(ConfigParameter.METHOD.getValue()));
+                    Constructor constructor = currAlgorithm.getConstructor(Handler.class, String.class);
+                    currObj = constructor.newInstance(prevObj,
+                            listMethods.get(i).get(ConfigParameter.CONFIG_FILE.getValue()));
+                }
+                ((Encoder) currObj).run();
+                prevObj = currObj;
             }
-            bufferOut.write(byte_);
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error: not found method " + e.getMessage());
+            LogFile.WriterLogFile(e);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            LogFile.WriterLogFile(e);
         }
-        bufferOut.flush();
     }
 }

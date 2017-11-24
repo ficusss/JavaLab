@@ -1,1 +1,0 @@
-Invalid data in configuration file. Invalid values in mode!

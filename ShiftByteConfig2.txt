@@ -1,0 +1,2 @@
+ mode=<<
+count_bits=6

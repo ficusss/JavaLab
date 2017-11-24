@@ -1,9 +1,7 @@
 package com.company;
 
-import sun.security.provider.SHA;
-
 import java.io.*;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Main {
@@ -13,21 +11,11 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            Map hashMapArg = Parser.getMap(Parser.arrToString(args), Parser.REG_COMMAND_LINE);
-
-            FileInputStream input = new FileInputStream((String) hashMapArg.get(FileName.INPUT.getValue()));
-            FileOutputStream output = new FileOutputStream((String) hashMapArg.get(FileName.OUTPUT.getValue()));
-            File configFile = new File((String) hashMapArg.get(FileName.CONFIG.getValue()));
-
-            Map configData = ConfFile.read(configFile);
-            List<Encoder> encoderList = ParserOfMethods.getList(configData);
-
-            Conveyor.start(input, output, encoderList, configData);
-
-            //ShiftByte shift = new ShiftByte();
-            //shift.encodeAllStream(input, output, configData);
-
-        } catch (InvalidConfigurationData|RepetitionOfArgument|IOException|NumberFormatException e ) {
+            Map<String, String> mapArg = Parser.getMap(Parser.arrToString(args), Parser.REG_COMMAND_LINE);
+            File configFile = new File(mapArg.get(FileName.CONFIG.getValue()));
+            ArrayList<Map<String, String>> listOfMethod = ConfFile.readToList(configFile, Parser.REG_MAIN_CONFIG_FILE);
+            Conveyor.start(mapArg, listOfMethod);
+        } catch (RepetitionOfArgument|IOException e ) {
             System.out.println(e.getMessage());
             LogFile.WriterLogFile(e);
         } catch (NullPointerException e) {
