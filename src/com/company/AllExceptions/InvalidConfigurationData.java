@@ -1,4 +1,4 @@
-package com.company;
+package com.company.AllExceptions;
 
 /**
  * An exception occurs if any data does not meet expectations.

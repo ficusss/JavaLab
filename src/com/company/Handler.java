@@ -7,5 +7,6 @@ import java.util.Map;
  */
 public interface Handler {
     boolean isReturn();
-    byte[] getOutputData();
+    Map<String, InnerConverter> getReturnedTypes();
+    Class getOutputData();
 }

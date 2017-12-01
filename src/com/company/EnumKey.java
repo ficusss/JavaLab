@@ -78,3 +78,16 @@ enum Mode {
         return string;
     }
 }
+
+enum OutputTypes {
+    ARR_BYTE("OutArrayByte"), STRING("OutString");
+    private final String string;
+
+    OutputTypes(String str) {
+        this.string = str;
+    }
+
+    public String getValue() {
+        return string;
+    }
+}

@@ -1,10 +1,12 @@
 package com.company;
 
+
+import com.sun.java.util.jar.pack.Package;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Initial blank for the conveyor.
@@ -12,6 +14,13 @@ import java.util.Map;
 public class Begin implements Encoder, Handler {
 
     private byte[] outputData;
+    static private Map<String, InnerConverter> outputTypes;
+
+    static {
+        outputTypes = new HashMap<>();
+        outputTypes.put(OutputTypes.STRING.getValue(), OutArrayByte.class);
+        outputTypes.put(OutputTypes.ARR_BYTE.getValue(), OutString.class);
+    }
 
     /**
      * Begin-constructor: Preprocessing data for method
@@ -42,8 +51,37 @@ public class Begin implements Encoder, Handler {
      * @return - processed data.
      */
     @Override
-    public byte[] getOutputData() {
-        return outputData;
+    public Class getOutputData(Class cls) {
+        return cls;
     }
 
+    /**
+     * Returns a list of data types that the class can return
+     *
+     * @return types of data that a class can return
+     */
+    @Override
+    public ArrayList<String> getOutputTypes() {
+        return outputTypes;
+    }
+
+    /**
+     * Inner class for convert output data to array of bytes
+     */
+    private class OutArrayByte implements InnerConverter {
+        @Override
+        public Object get() {
+            return outputData;
+        }
+    }
+
+    /**
+     * Inner class for convert output data to String
+     */
+    private class OutString implements InnerConverter {
+        @Override
+        public Object get() {
+            return new String(outputData);
+        }
+    }
 }

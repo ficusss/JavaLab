@@ -1,4 +1,4 @@
-package com.company;
+package com.company.AllExceptions;
 /**
  * An exception is called if command list empty
  */

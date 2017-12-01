@@ -1,8 +1,12 @@
 package com.company;
 
-import org.omg.CORBA.Object;
+
+import com.company.AllExceptions.EmptyReturn;
+import com.company.AllExceptions.InvalidConfigurationData;
+import com.company.AllExceptions.RepetitionOfArgument;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +15,18 @@ public class ShiftByte implements Encoder, Handler {
     private byte[] inputData;
     private Map<String, String> configData;
     private byte[] outputData;
+    static private ArrayList<String> inputTypes;
+    static private Map<String, InnerConverter> outputTypes;
+
+    static {
+        inputTypes = new ArrayList<>();
+        inputTypes.add(OutputTypes.ARR_BYTE.getValue());
+        outputTypes = new HashMap<>();
+        outputTypes.put(OutputTypes.ARR_BYTE.getValue(), OutArrayByte.class);
+        outputTypes.put(OutputTypes.STRING.getValue(), OutString.class);
+    }
+
+
 
     /**
      * ShiftByte-constructor: Preprocessing data for method.
@@ -27,7 +43,14 @@ public class ShiftByte implements Encoder, Handler {
             RepetitionOfArgument, InvalidConfigurationData, EmptyReturn, NullPointerException {
         if (!prevAlgorithm.isReturn())
             throw new EmptyReturn();
-        inputData = prevAlgorithm.getOutputData();
+        Map<String, InnerConverter> map = prevAlgorithm.getReturnedTypes();
+        for (String in : inputTypes) {
+            if (map.containsKey(in)) {
+                InnerConverter inputType = map.get(in);
+                inputData = (byte[]) inputType.get();
+                break;
+            }
+        }
         outputData = inputData.clone();
         File conf = new File(configFile);
         configData = ConfFile.readToMap(conf, Parser.REG_CONFIG_FILE);
@@ -97,5 +120,25 @@ public class ShiftByte implements Encoder, Handler {
      */
     private byte rotateLeft(byte byte_, int shift) {
         return (byte) (((byte_ & 0xff) << shift) | ((byte_ & 0xff) >>> (8 - shift)));
+    }
+
+    /**
+     * Inner class for convert output data to array of bytes
+     */
+    private class OutArrayByte implements InnerConverter {
+        @Override
+        public Object get() {
+            return outputData;
+        }
+    }
+
+    /**
+     * Inner class for convert output data to String
+     */
+    private class OutString implements InnerConverter {
+        @Override
+        public Object get() {
+            return new String(outputData);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.AllExceptions.RepetitionOfArgument;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,7 +17,7 @@ public class Main {
             File configFile = new File(mapArg.get(FileName.CONFIG.getValue()));
             ArrayList<Map<String, String>> listOfMethod = ConfFile.readToList(configFile, Parser.REG_MAIN_CONFIG_FILE);
             Conveyor.start(mapArg, listOfMethod);
-        } catch (RepetitionOfArgument|IOException e ) {
+        } catch (RepetitionOfArgument |IOException e ) {
             System.out.println(e.getMessage());
             LogFile.WriterLogFile(e);
         } catch (NullPointerException e) {

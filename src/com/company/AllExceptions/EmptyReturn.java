@@ -1,4 +1,4 @@
-package com.company;
+package com.company.AllExceptions;
 
 /**
  *  An exception is called if method nothing return
