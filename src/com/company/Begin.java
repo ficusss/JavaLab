@@ -1,9 +1,9 @@
 package com.company;
 
 
-import com.sun.java.util.jar.pack.Package;
-
+import java.lang.reflect.Constructor;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -14,12 +14,12 @@ import java.util.*;
 public class Begin implements Encoder, Handler {
 
     private byte[] outputData;
-    static private Map<String, InnerConverter> outputTypes;
+    static private Map<String, Class> outputTypes;
 
     static {
         outputTypes = new HashMap<>();
-        outputTypes.put(OutputTypes.STRING.getValue(), OutArrayByte.class);
-        outputTypes.put(OutputTypes.ARR_BYTE.getValue(), OutString.class);
+        outputTypes.put(OutputTypes.STRING.getValue(), OutString.class);
+        outputTypes.put(OutputTypes.ARR_BYTE.getValue(), OutArrayByte.class);
     }
 
     /**
@@ -42,18 +42,22 @@ public class Begin implements Encoder, Handler {
         return true;
     }
 
-    @Override
-    public void run() {}
-
     /**
-     * Gives processed data.
      *
-     * @return - processed data.
+     * @param c
+     * @return
+     * @throws Exception - all exception for reflect
      */
     @Override
-    public Class getOutputData(Class cls) {
-        return cls;
+    public Object getOutput(Class c) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+            InvocationTargetException, ClassNotFoundException {
+        Class c1 = Class.forName(c.getName());
+        Constructor constructor = c1.getDeclaredConstructor(Begin.class);
+        return constructor.newInstance(this);
     }
+
+    @Override
+    public void run() {}
 
     /**
      * Returns a list of data types that the class can return
@@ -61,16 +65,26 @@ public class Begin implements Encoder, Handler {
      * @return types of data that a class can return
      */
     @Override
-    public ArrayList<String> getOutputTypes() {
+    public Map<String, Class> getReturnedTypes() {
         return outputTypes;
     }
 
     /**
      * Inner class for convert output data to array of bytes
      */
-    private class OutArrayByte implements InnerConverter {
+    public class OutArrayByte implements InnerConverter {
+        /**
+         * Constructor of class
+         */
+        public OutArrayByte() {}
+
+        /**
+         * Returns a data in format like array byte
+         *
+         * @return data
+         */
         @Override
-        public Object get() {
+        public Object getData() {
             return outputData;
         }
     }
@@ -78,9 +92,19 @@ public class Begin implements Encoder, Handler {
     /**
      * Inner class for convert output data to String
      */
-    private class OutString implements InnerConverter {
+    public class OutString implements InnerConverter {
+        /**
+         * Constructor of class
+         */
+        public OutString() {}
+
+        /**
+         * Returns a data in format like string
+         *
+         * @return data
+         */
         @Override
-        public Object get() {
+        public Object getData() {
             return new String(outputData);
         }
     }

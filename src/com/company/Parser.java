@@ -19,7 +19,7 @@ public class Parser {
      */
     static {
         REG_COMMAND_LINE = "(\\w+)=(\\w+\\.\\w+)";
-        REG_MAIN_CONFIG_FILE = "(^#\\w+)=(\\w+\\.\\w+)";
+        REG_MAIN_CONFIG_FILE = "(\\w+)=(\\w+\\.\\w+)";
         REG_CONFIG_FILE = "(\\w+)=((\\W+)|(\\w+))";
     }
 

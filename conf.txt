@@ -1,3 +1,2 @@
 ShiftByte=ShiftByteConfig1.txt
-#xor=sf.txt
 ShiftByte=ShiftByteConfig2.txt

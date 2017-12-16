@@ -1,5 +1,6 @@
 package com.company;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -7,6 +8,7 @@ import java.util.Map;
  */
 public interface Handler {
     boolean isReturn();
-    Map<String, InnerConverter> getReturnedTypes();
-    Class getOutputData();
+    Object getOutput(Class c) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+            InvocationTargetException, ClassNotFoundException;
+    Map<String, Class> getReturnedTypes();
 }

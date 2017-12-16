@@ -6,6 +6,8 @@ import com.company.AllExceptions.InvalidConfigurationData;
 import com.company.AllExceptions.RepetitionOfArgument;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class ShiftByte implements Encoder, Handler {
     private Map<String, String> configData;
     private byte[] outputData;
     static private ArrayList<String> inputTypes;
-    static private Map<String, InnerConverter> outputTypes;
+    static private Map<String, Class> outputTypes;
 
     static {
         inputTypes = new ArrayList<>();
@@ -40,14 +42,17 @@ public class ShiftByte implements Encoder, Handler {
      * @throws NullPointerException - an exception occurs if the required key does not exist.
      */
     public ShiftByte(Handler prevAlgorithm, String configFile) throws IOException,
-            RepetitionOfArgument, InvalidConfigurationData, EmptyReturn, NullPointerException {
+            RepetitionOfArgument, InvalidConfigurationData, EmptyReturn, NullPointerException,
+            NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            ClassNotFoundException{
         if (!prevAlgorithm.isReturn())
             throw new EmptyReturn();
-        Map<String, InnerConverter> map = prevAlgorithm.getReturnedTypes();
+        Map<String, Class> prevDataTypes = prevAlgorithm.getReturnedTypes();
         for (String in : inputTypes) {
-            if (map.containsKey(in)) {
-                InnerConverter inputType = map.get(in);
-                inputData = (byte[]) inputType.get();
+            if (prevDataTypes.containsKey(in)) {
+                Class tmp = prevDataTypes.get(in);
+                InnerConverter converter = (InnerConverter) prevAlgorithm.getOutput(tmp);
+                inputData = (byte[]) converter.getData();
                 break;
             }
         }
@@ -67,12 +72,27 @@ public class ShiftByte implements Encoder, Handler {
     }
 
     /**
-     * Gives processed data.
+     * Returns a list of data types that the class can return
      *
-     * @return - processed data.
+     * @return types of data that a class can return
      */
-    public byte[] getOutputData() {
-        return outputData;
+    @Override
+    public Map<String, Class> getReturnedTypes() {
+        return outputTypes;
+    }
+
+    /**
+     *
+     * @param c
+     * @return
+     * @throws Exception - all exception for reflect
+     */
+    @Override
+    public Object getOutput(Class c) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+            InvocationTargetException, ClassNotFoundException {
+        Class c1 = Class.forName(c.getName());
+        Constructor constructor = c1.getDeclaredConstructor(ShiftByte.class);
+        return constructor.newInstance(this);
     }
 
     /**
@@ -125,9 +145,19 @@ public class ShiftByte implements Encoder, Handler {
     /**
      * Inner class for convert output data to array of bytes
      */
-    private class OutArrayByte implements InnerConverter {
+    public class OutArrayByte implements InnerConverter {
+        /**
+         * Private constructor of class
+         */
+        public OutArrayByte() {}
+
+        /**
+         * Returns a data in format like array byte
+         *
+         * @return data
+         */
         @Override
-        public Object get() {
+        public Object getData() {
             return outputData;
         }
     }
@@ -135,9 +165,19 @@ public class ShiftByte implements Encoder, Handler {
     /**
      * Inner class for convert output data to String
      */
-    private class OutString implements InnerConverter {
+    public class OutString implements InnerConverter {
+        /**
+         * Private constructor of class
+         */
+        public OutString() {}
+
+        /**
+         * Returns a data in format like string
+         *
+         * @return data
+         */
         @Override
-        public Object get() {
+        public Object getData() {
             return new String(outputData);
         }
     }

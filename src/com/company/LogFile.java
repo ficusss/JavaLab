@@ -13,7 +13,8 @@ public class LogFile {
             logFile.write(message.getMessage());
         }
         catch (IOException | NullPointerException e){
-            System.out.println("Error: cannot write to logFile, because: error=" + e.getMessage());
+            System.out.println("Error: cannot write to logFile, because: error=" + e);
+            System.out.println("Error: " + message);
         }
     }
 }

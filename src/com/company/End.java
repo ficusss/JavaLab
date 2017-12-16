@@ -5,6 +5,8 @@ import com.company.AllExceptions.EmptyReturn;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -14,6 +16,12 @@ public class End implements Encoder, Handler {
 
     private final String nameOutputFile;
     private byte[] inputData;
+    static private ArrayList<String> inputTypes;
+
+    static {
+        inputTypes = new ArrayList<>();
+        inputTypes.add(OutputTypes.ARR_BYTE.getValue());
+    }
 
     /**
      * Determines whether a data method can potentially return something
@@ -26,12 +34,12 @@ public class End implements Encoder, Handler {
     }
 
     /**
-     * Gives processed data.
+     * Returns a list of data types that the class can return
      *
-     * @return - null.
+     * @return types of data that a class can return
      */
     @Override
-    public byte[] getOutputData() {
+    public Map<String, Class> getReturnedTypes() {
         return null;
     }
 
@@ -49,18 +57,34 @@ public class End implements Encoder, Handler {
         }
     }
 
+    @Override
+    public Object getOutput(Class c) throws NoSuchMethodException, InstantiationException, IllegalAccessException,
+            InvocationTargetException, ClassNotFoundException {
+        return null;
+    }
+
     /**
      * End-constructor: Preprocessing data for method.
      *
      * @param prevAlgorithm - link on previous algorithm.
-     * @param argMap - arguments command line.
+     * @param argMap        - arguments command line.
      * @throws NullPointerException - an exception occurs if the required key does not exist.
-     * @throws EmptyReturn - an exception occurs if previous algorithm don't have returns data.
+     * @throws EmptyReturn          - an exception occurs if previous algorithm don't have returns data.
      */
-    public End(Handler prevAlgorithm, Map<String, String> argMap) throws NullPointerException, EmptyReturn {
-        if(!prevAlgorithm.isReturn())
+    public End(Handler prevAlgorithm, Map<String, String> argMap) throws NullPointerException, EmptyReturn,
+            NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException,
+            ClassNotFoundException {
+        if (!prevAlgorithm.isReturn())
             throw new EmptyReturn();
         nameOutputFile = argMap.get(FileName.OUTPUT.getValue());
-        inputData = prevAlgorithm.getOutputData();
+        Map<String, Class> prevDataTypes = prevAlgorithm.getReturnedTypes();
+        for (String in : inputTypes) {
+            if (prevDataTypes.containsKey(in)) {
+                Class tmp = prevDataTypes.get(in);
+                InnerConverter converter = (InnerConverter) prevAlgorithm.getOutput(tmp);
+                inputData = (byte[]) converter.getData();
+                break;
+            }
+        }
     }
 }

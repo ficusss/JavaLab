@@ -47,6 +47,9 @@ public class Conveyor {
             LogFile.WriterLogFile(e);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            System.out.println(e.getCause());
+            System.out.println(e.getStackTrace());
+            e.printStackTrace();
             LogFile.WriterLogFile(e);
         }
     }
