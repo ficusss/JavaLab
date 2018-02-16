@@ -1,2 +1,5 @@
- mode=<<
-count_bits=6
+mode=>>
+count_bits=8
+start=5
+step=10
+pack=5

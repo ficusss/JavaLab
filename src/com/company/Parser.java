@@ -12,7 +12,7 @@ public class Parser {
     static public String REG_COMMAND_LINE;
     static public String REG_CONFIG_FILE;
     static public String REG_MAIN_CONFIG_FILE;
-
+    static private String KEY_SYMBOL;
 
     /**
      * Static block with initialization of regular expressions.
@@ -21,6 +21,7 @@ public class Parser {
         REG_COMMAND_LINE = "(\\w+)=(\\w+\\.\\w+)";
         REG_MAIN_CONFIG_FILE = "(\\w+)=(\\w+\\.\\w+)";
         REG_CONFIG_FILE = "(\\w+)=((\\W+)|(\\w+))";
+        KEY_SYMBOL = " ";
     }
 
     private Parser() {}
@@ -34,7 +35,7 @@ public class Parser {
         StringBuffer argStr = new StringBuffer();
         for (String str : args) {
             argStr.append(str);
-            argStr.append(" ");
+            argStr.append(KEY_SYMBOL);
         }
         return argStr;
     }
@@ -49,18 +50,12 @@ public class Parser {
         ArrayList<Map<String, String>> list = new ArrayList<>();
         Pattern p = Pattern.compile(regStr);
         Matcher m = p.matcher(string);
-        Map<String, String> begin = new HashMap<>();
-        begin.put(ConfigParameter.METHOD.getValue(), "Begin");
-        list.add(begin);
         while (m.find()) {
             Map<String, String> tmp = new HashMap<>();
             tmp.put(ConfigParameter.METHOD.getValue(), m.group(1));
             tmp.put(ConfigParameter.CONFIG_FILE.getValue(), m.group(2));
             list.add(tmp);
         }
-        Map<String, String> end = new HashMap<>();
-        end.put(ConfigParameter.METHOD.getValue(), "End");
-        list.add(end);
         return list;
     }
 

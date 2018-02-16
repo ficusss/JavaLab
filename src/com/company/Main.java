@@ -16,7 +16,7 @@ public class Main {
             Map<String, String> mapArg = Parser.getMap(Parser.arrToString(args), Parser.REG_COMMAND_LINE);
             File configFile = new File(mapArg.get(FileName.CONFIG.getValue()));
             ArrayList<Map<String, String>> listOfMethod = ConfFile.readToList(configFile, Parser.REG_MAIN_CONFIG_FILE);
-            Conveyor.start(mapArg, listOfMethod);
+            Launch.start(mapArg, listOfMethod);
         } catch (RepetitionOfArgument |IOException e ) {
             System.out.println(e.getMessage());
             LogFile.WriterLogFile(e);
